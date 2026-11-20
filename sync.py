@@ -16,5 +16,7 @@ else:
     n = 0
     for d in sorted(os.listdir('out')) if os.path.isdir('out') else []:
         for f in sorted(os.listdir(f'out/{d}')):
-            print(f, post(f'{d}/{f}', open(f'out/{d}/{f}', 'rb').read())); n += 1
+            r = post(f'{d}/{f}', open(f'out/{d}/{f}', 'rb').read()); print(f, r)
+            if r != 'ok': sys.exit('送信失敗')
+            n += 1
     print('送信', n)
