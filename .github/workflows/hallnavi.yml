@@ -18,16 +18,3 @@ jobs:
           python -m playwright install --with-deps chromium > /dev/null
           cd hallnavi && python hall_navi.py && cd ..
           python sync.py file hallnavi_latest.json hallnavi/hallnavi_latest.json
-  dmm:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v4
-      - name: fetch
-        env:
-          KEY: ${{ secrets.XSERVER_KEY }}
-          TZ: Asia/Tokyo
-        run: |
-          pip install -q beautifulsoup4
-          cd hallnavi && python gh_dmm.py && cd ..
-          python sync.py file dmm_week.json hallnavi/dmm_week.json
