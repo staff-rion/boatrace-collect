@@ -13,6 +13,7 @@ jobs:
         env:
           KEY: ${{ secrets.XSERVER_KEY }}
         run: |
+          curl -s -o /dev/null -w 'dmm %{http_code}\n' -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36' 'https://p-town.dmm.com/schedules/tokyo?page=1'
           pip install -q playwright
           python -m playwright install --with-deps chromium > /dev/null
           cd hallnavi && python hall_navi.py && cd ..
