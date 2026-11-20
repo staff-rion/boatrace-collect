@@ -1,0 +1,19 @@
+name: hallnavi
+on:
+  schedule:
+    - cron: '40 11 * * *'   # JST 20:40(狙い目ナビ21:00バッチの前)
+  workflow_dispatch: {}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch
+        env:
+          KEY: ${{ secrets.XSERVER_KEY }}
+        run: |
+          pip install -q playwright
+          python -m playwright install --with-deps chromium > /dev/null
+          cd hallnavi && python hall_navi.py && cd ..
+          python sync.py hallnavi hallnavi/hallnavi_latest.json
