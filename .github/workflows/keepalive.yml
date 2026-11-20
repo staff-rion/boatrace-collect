@@ -1,0 +1,18 @@
+name: keepalive
+on:
+  schedule:
+    - cron: '0 15 * * *'   # 毎日0時(JST)。60日更新なしで定期実行が止まるのを防ぐ
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          date -u > last_run.txt
+          git config user.name keepalive
+          git config user.email keepalive@users.noreply.github.com
+          git add last_run.txt
+          git commit -m keepalive && git push

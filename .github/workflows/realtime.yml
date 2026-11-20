@@ -1,0 +1,24 @@
+name: realtime-beforeinfo
+on:
+  schedule:
+    - cron: '*/5 23,0-11 * * *'   # JST 8:00-20:59 の5分ごと
+  workflow_dispatch: {}
+concurrency: realtime
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: ssh key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.XSERVER_KEY }}" > ~/.ssh/id
+          chmod 600 ~/.ssh/id
+          ssh-keyscan -p 10022 sv2036.xserver.jp >> ~/.ssh/known_hosts 2>/dev/null
+      - name: fetch
+        run: |
+          D=$(TZ=Asia/Tokyo date +%Y%m%d)
+          ssh -i ~/.ssh/id -p 10022 webya1989@sv2036.xserver.jp "ls nerai-navi.com/boat_private/beforeinfo/$D 2>/dev/null" | sed 's/_beforeinfo.html.gz//' > done.txt || true
+          python3 realtime.py
+          rsync -a -e "ssh -i ~/.ssh/id -p 10022" out/ webya1989@sv2036.xserver.jp:nerai-navi.com/boat_private/beforeinfo/
