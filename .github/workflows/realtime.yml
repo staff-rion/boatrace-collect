@@ -10,15 +10,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: ssh key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.XSERVER_KEY }}" > ~/.ssh/id
-          chmod 600 ~/.ssh/id
-          ssh-keyscan -p 10022 sv2036.xserver.jp >> ~/.ssh/known_hosts 2>/dev/null
       - name: fetch
+        env:
+          KEY: ${{ secrets.XSERVER_KEY }}
         run: |
-          D=$(TZ=Asia/Tokyo date +%Y%m%d)
-          ssh -i ~/.ssh/id -p 10022 webya1989@sv2036.xserver.jp "ls nerai-navi.com/boat_private/beforeinfo/$D 2>/dev/null" | sed 's/_beforeinfo.html.gz//' > done.txt || true
+          python3 sync.py list || true
           python3 realtime.py
-          rsync -a -e "ssh -i ~/.ssh/id -p 10022" out/ webya1989@sv2036.xserver.jp:nerai-navi.com/boat_private/beforeinfo/
+          python3 sync.py push
