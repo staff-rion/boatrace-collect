@@ -9,8 +9,8 @@ def post(name, body=b''):
     sig = hmac.new(K, name.encode() + b'\n' + body, hashlib.sha256).hexdigest()
     req = urllib.request.Request(URL + name, data=body, headers={'X-Sig': sig, 'Content-Type': 'application/octet-stream'})
     return urllib.request.urlopen(req, timeout=60).read().decode()
-if sys.argv[1] == 'hallnavi':
-    r = post('hallnavi_latest.json', open(sys.argv[2], 'rb').read()); print('hallnavi', r)
+if sys.argv[1] == 'file':
+    r = post(sys.argv[2], open(sys.argv[3], 'rb').read()); print(sys.argv[2], r)
     if r != 'ok': sys.exit('送信失敗')
 elif sys.argv[1] == 'list':
     ds = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime('%Y%m%d')
