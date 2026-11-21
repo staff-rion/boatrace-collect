@@ -1,7 +1,7 @@
 name: hallnavi
 on:
   schedule:
-    - cron: '20 11 * * *'   # JST 20:20(狙い目ナビ21:00バッチの前)
+    - cron: '17 11 * * *'   # JST 20:17(狙い目ナビ21:00バッチの前)
   workflow_dispatch: {}
 jobs:
   hallnavi:

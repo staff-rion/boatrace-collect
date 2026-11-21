@@ -1,7 +1,7 @@
 name: realtime-beforeinfo
 on:
   schedule:
-    - cron: '*/5 23,0-11 * * *'   # JST 8:00-20:59 の5分ごと
+    - cron: '3-58/5 23,0-11 * * *'   # JST 8:00-20:59 の5分ごと
   workflow_dispatch: {}
 concurrency: realtime
 jobs:
