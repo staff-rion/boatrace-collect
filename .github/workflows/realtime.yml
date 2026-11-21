@@ -17,7 +17,7 @@ jobs:
           # 1回の起動で約25分、1分ごとに取って送る(次の起動は concurrency で前の回が終わるまで待つ)
           for i in $(seq 1 25); do
             python3 sync.py list || true
-            python3 realtime.py; rc=$?
+            rc=0; python3 realtime.py || rc=$?
             python3 sync.py push || true
             [ $rc -eq 1 ] && break   # 公式が403/503なら止める(回避しない)
             sleep 45
