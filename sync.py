@@ -19,7 +19,9 @@ else:
     n = 0
     for d in sorted(os.listdir('out')) if os.path.isdir('out') else []:
         for f in sorted(os.listdir(f'out/{d}')):
-            r = post(f'{d}/{f}', open(f'out/{d}/{f}', 'rb').read()); print(f, r)
-            if r != 'ok': sys.exit('送信失敗')
-            n += 1
+            try: r = post(f'{d}/{f}', open(f'out/{d}/{f}', 'rb').read())
+            except Exception as e: r = f'err {e}'
+            print(f, r)
+            if r == 'ok':   # 送れたら消す(1回の起動で何度も送るので、送った分を残すと毎回送り直して止まっていた)
+                os.remove(f'out/{d}/{f}'); n += 1
     print('送信', n)
