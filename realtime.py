@@ -36,8 +36,8 @@ for m, j, r, key in sorted(races):
     i = t.find('部品交換 前走成績')
     sec = t[i:t.find('部品交換凡例', i)] if i >= 0 else ''
     n = len(re.findall(r'kg (\d\.\d\d)', sec))
-    if n == 0 or (n < 6 and '着順 欠' not in sec):
-        continue  # まだ出ていない(欠場艇がいるレースは6艇未満でも保存)
+    if n == 0:
+        continue  # 展示タイムが1つも無い=まだ出ていない(欠場・展示タイム無しの艇がいても、出ていれば保存)
     with gzip.open(f'out/{ds}/{key}_beforeinfo.html.gz', 'wt') as g:
         g.write(h)
     got += 1
