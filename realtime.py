@@ -28,14 +28,16 @@ for m, j, r, key in sorted(races):
     code, h = curl(f'https://www.boatrace.jp/owpc/pc/race/beforeinfo?rno={r}&jcd={j:02d}&hd={ds}')
     time.sleep(3)
     if code in ('403', '503'):
-        print('official', code, '停止'); sys.exit(1)
+        print('official', code, '停止'); break   # 回避しない。取れた分は送る
     if code != '200':
         continue
     t = re.sub(r'<script.*?</script>|<style.*?</style>', '', h, flags=re.S)
     t = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', t))
     i = t.find('部品交換 前走成績')
-    if len(re.findall(r'kg (\d\.\d\d)', t[i:i + 500])) < 6:
-        continue  # まだ出ていない
+    sec = t[i:t.find('部品交換凡例', i)] if i >= 0 else ''
+    n = len(re.findall(r'kg (\d\.\d\d)', sec))
+    if n == 0 or (n < 6 and '着順 欠' not in sec):
+        continue  # まだ出ていない(欠場艇がいるレースは6艇未満でも保存)
     with gzip.open(f'out/{ds}/{key}_beforeinfo.html.gz', 'wt') as g:
         g.write(h)
     got += 1
